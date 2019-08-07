@@ -1,10 +1,12 @@
 'use strict'
 const path = require('path')
+const webpack = require('webpack')
 const merge = require('webpack-merge')
 const baseConfig = require('./ssr-base-config')
 const ssrServerPlugin = require("vue-server-renderer/server-plugin")
 const nodeExternals = require('webpack-node-externals')
 
+baseConfig.module.rules[0].options = ''// 服务端去除打包css的配置
 const config=merge(baseConfig,{
   entry:{
     app:"./src/entry-server.js"
@@ -32,6 +34,9 @@ const config=merge(baseConfig,{
   }),
   devtool:"source-map",
   plugins:[
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }),
     // 这是将服务器的整个输出
     // 构建为单个 JSON 文件的插件。
     // 默认文件名为 `vue-ssr-server-bundle.json`

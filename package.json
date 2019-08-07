@@ -5,15 +5,17 @@
   "author": "Liweifei <1195669615@qq.com>",
   "private": true,
   "scripts": {
-    "ssrdev":"node server",
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "dev": "node server",
+    "production": "cross-env NODE_ENV=production node server",
+    "build": "rimraf dist && npm run buildServer && npm run buildClient",
+    "buildClient": "cross-env NODE_ENV=production webpack --config build/ssr-client-config.js --progress --color",
+    "buildServer": "cross-env NODE_ENV=production webpack --config build/ssr-server-config.js --progress --color",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
-    "build": "node build/build.js"
+    "test": "npm run unit && npm run e2e"
   },
   "dependencies": {
+    "cross-env": "^3.2.4",
     "lru-cache": "^5.1.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",

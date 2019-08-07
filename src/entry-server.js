@@ -21,11 +21,14 @@ export default context => {
       }
       
       //如果有匹配的路由,则查看是否需要数据预取
+      //注意，客户端数据预取只会匹配首路由，也就是/，也就是正常来说都是首页或者登录页啥的，其它界面的数据预取都是要靠客户端预取做的
       Promise.all(matchComponents.map(c=>{
         // 如果存在需要数据预取的fucntion则执行调用
+        console.log("预取匹配:")
+        console.log(c.asyncGetData);
         return c.asyncGetData && c.asyncGetData(store,router);
       })).then(()=>{
-        context.state=store.state;//数据预取传送到客户端进行同步;vue-ssr-server-render 会占用state给window.__INITTAL_STATE__
+        context.state=store.state;//数据预取传送到客户端进行同步;vue-ssr-server-render 会占用state给window.__INITIAL_STATE__
 
         resolve(app)
       }).catch(()=>{

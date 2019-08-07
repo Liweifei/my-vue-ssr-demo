@@ -5,6 +5,7 @@ Vue.use(Router)
 
 const createRoute = function () {
   return new Router({
+    mode:"history",
     routes: [
       {
         path: '/',

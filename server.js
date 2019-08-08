@@ -1,12 +1,14 @@
 //开服务
 //加工返回页面的html字符串
 const express=require("express");
+const compression = require('compression') // 开启gzip压缩
 const fs=require("fs")
 const LRU=require("lru-cache")
 const { createBundleRenderer } = require('vue-server-renderer')
 const porfinder=require("portfinder")
 
 const server=express();
+server.use(compression({ threshold: 0 })) // gzip压缩 threshold:针对响应考虑压缩前响应主体大小的字节阈值，默认为1kb。这是字节模块接受的字节数或字符串数。
 server.use('/dist', express.static('dist')); // 管理静态资源，避免资源访问不到的情况
 const ssrtemplate=fs.readFileSync("./src/ssrtemplate/index.html","utf-8");//读取ssr 渲染的template
 
@@ -25,7 +27,7 @@ function createRender(bundle,manifest){//获取server-render的实例
 let renderer;
 const isPro=process.env.NODE_ENV=="production";
 if(isPro){
-  renderer=createRender(require("./dist/vue-ssr-server-bundle.json"),require("./vue-ssr-client-manifest.json"))
+  renderer=createRender(require("./dist/vue-ssr-server-bundle.json"),require("./dist/vue-ssr-client-manifest.json"))
 }else{
   require("./build/setup-dev-server")(server,(bundle,clientmanifest)=>{
     renderer=createRender(bundle,clientmanifest)
